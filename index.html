@@ -212,7 +212,10 @@ ol.steps{padding-left:20px;margin:6px 0}ol.steps li{margin-bottom:8px}
     <div style="height:12px"></div>
     <button class="btn" id="cfgSave">সংযুক্ত করুন</button>
     <div style="height:8px"></div>
+    <button class="btn ghost" id="cfgLink">🔗 সংযোগসহ লিংক কপি করুন (নতুন ডিভাইসের জন্য)</button>
+    <div style="height:8px"></div>
     <button class="btn ghost" id="cfgOff">ডেমো মোডে ফিরুন (শীটে কিছু যাবে না)</button>
+    <div class="note">💡 <b>প্রতিবার নতুন করে সংযোগ না দিতে:</b> ফাইলের (<i>makka-madina-stock.html</i>) শুরুর দিকে <code>DEFAULT_CFG</code>-এ <code>url</code> ও <code>pin</code> একবার বসিয়ে সেভ করুন, তারপর ফাইলটি হোস্ট করুন বা সব ডিভাইসে একই ফাইল ব্যবহার করুন। অথবা হোস্ট করা সাইটে উপরের “সংযোগসহ লিংক” নতুন ডিভাইসে খুলুন।</div>
     <p class="sub" style="margin-top:12px">কোড পরে বদলালে Deploy → Manage deployments → ✏️ → New version দিয়ে আবার Deploy করতে হবে।</p>
   </div>
 </section>
@@ -356,8 +359,13 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const todayStr=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*60000).toISOString().slice(0,10)};
 const PAL=['#12362a','#d29a1f','#7a4a2b','#4f7f5b','#a3452b','#2f6f8f','#8a6d1f','#6b4c7a','#3d5a3a','#b87333'];
 
-let cfg={url:'',pin:'',target:10000};
-try{Object.assign(cfg,JSON.parse(localStorage.getItem('mm_cfg')||'{}'))}catch(e){}
+/* ===== স্থায়ী সংযোগ: এখানে একবার URL ও PIN বসালে যেকোনো ডিভাইসে নিজে থেকে সংযুক্ত হবে ===== */
+const DEFAULT_CFG={url:'https://script.google.com/macros/s/AKfycbyopz2tPPABgz8f9eUb-nq0bO1ai9vjbbh6CJCQknT9WLXyVeTnRF-U0aS-wokEbmAr/exec',pin:'1234',target:10000};
+/* ================================================================================== */
+// সংযোগসহ লিংক (#c=...) দিয়ে খুললে এই ডিভাইসে সেটিং সেভ হয়ে যায়
+try{const m=location.hash.match(/#c=([^&]+)/);if(m){const j=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))));if(j.url){localStorage.setItem('mm_cfg',JSON.stringify(j));history.replaceState(null,'',location.pathname+location.search)}}}catch(e){}
+let cfg=Object.assign({},DEFAULT_CFG);
+try{const sv=JSON.parse(localStorage.getItem('mm_cfg')||'{}');if(sv.off){cfg.url='';cfg.pin=''}else if(sv.url){Object.assign(cfg,sv)}else if(sv.target){cfg.target=sv.target}}catch(e){}
 let data={varieties:[],ins:[],outs:[]};
 let hType='all', busy=false;
 
@@ -608,7 +616,14 @@ $('#cfgSave').onclick=async()=>{
     saveCfg();data=r;$('#tgtLbl').textContent=bn(target);afterData();renderSetup();setSync('','লাইভ · সংযুক্ত');toast('Google Sheet-এর সাথে সংযুক্ত ✔');show('dash');
   }catch(e){cfg=old;toast('সংযোগ হয়নি — URL ও “Anyone” অ্যাক্সেস দেখুন',true)}
 };
-$('#cfgOff').onclick=()=>{cfg.url='';cfg.pin='';saveCfg();renderSetup();refresh()};
+$('#cfgOff').onclick=()=>{cfg.url='';cfg.pin='';localStorage.setItem('mm_cfg',JSON.stringify({off:1,target:cfg.target}));renderSetup();refresh()};
+$('#cfgLink').onclick=async()=>{
+  if(!cfg.url)return toast('আগে সংযুক্ত করুন',true);
+  const c=encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify({url:cfg.url,pin:cfg.pin,target:cfg.target})))));
+  const link=location.href.split('#')[0]+'#c='+c;
+  try{await navigator.clipboard.writeText(link)}catch(e){prompt('এই লিংক কপি করুন:',link);return}
+  toast('লিংক কপি হয়েছে ✔ নতুন ডিভাইসে এটি খুললেই সংযুক্ত হবে');
+};
 
 refresh();
 setInterval(()=>{if(!document.hidden)refresh()},8000);
