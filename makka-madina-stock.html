@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>মক্কা মদিনা – খেজুর স্টক</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --deep:#12362a; --deep2:#1d5340; --brown:#5a3420; --gold:#d29a1f; --goldsoft:#f6e7bd;
+  --bg:#eaf0ec; --card:#ffffff; --ink:#18241f; --mute:#62736b; --line:#d5dfd9;
+  --red:#b3361f; --redsoft:#f8e1dc; --green:#237a4b; --greensoft:#dcf1e3;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Hind Siliguri','Noto Sans Bengali',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.5;padding-bottom:84px}
+button,input,select,textarea{font:inherit;color:inherit}
+header{background:var(--deep);color:#fff;padding:14px 16px 16px;position:sticky;top:0;z-index:20}
+.hwrap{max-width:1040px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column}
+.brand b{font-size:21px;font-weight:700;letter-spacing:.2px}
+.brand span{font-size:13px;color:#b9d3c6}
+.sync{display:flex;align-items:center;gap:8px;font-size:13px;background:rgba(255,255,255,.1);padding:6px 12px;border-radius:99px;cursor:pointer;border:0;color:#fff}
+.dot{width:9px;height:9px;border-radius:50%;background:#5be08f;box-shadow:0 0 0 0 rgba(91,224,143,.7);animation:pulse 2s infinite}
+.dot.err{background:#ff7b63;animation:none}.dot.demo{background:var(--gold);animation:none}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(91,224,143,0)}100%{box-shadow:0 0 0 0 rgba(91,224,143,0)}}
+@media (prefers-reduced-motion:reduce){.dot{animation:none}}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;z-index:30;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;background:none;padding:10px 4px 9px;font-size:13px;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;border-top:3px solid transparent}
+nav button .ic{font-size:20px;line-height:1}
+nav button.on{color:var(--deep);font-weight:600;border-top-color:var(--gold)}
+main{max-width:1040px;margin:auto;padding:16px}
+.view{display:none}.view.on{display:block}
+.card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:14px;border:1px solid var(--line)}
+h2{font-size:19px;margin:0 0 4px}
+.sub{color:var(--mute);font-size:14px;margin:0 0 12px}
+
+/* hero */
+.hero{background:var(--deep);color:#fff;border-radius:22px 22px 22px 6px;padding:20px;margin-bottom:14px;border:0}
+.hero .lbl{color:#b9d3c6;font-size:14px}
+.hero .big{font-size:54px;font-weight:700;line-height:1.1;margin:2px 0 2px}
+.hero .big small{font-size:18px;font-weight:500;color:#b9d3c6;margin-left:6px}
+.stack{display:flex;height:26px;border-radius:8px;overflow:hidden;background:rgba(255,255,255,.12);margin:14px 0 10px;gap:2px}
+.stack i{display:block;min-width:3px;transition:width .5s}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:#d4e6dc}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend em{width:10px;height:10px;border-radius:3px;display:inline-block}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}
+.kpi .n{font-size:26px;font-weight:700;line-height:1.2}
+.kpi .t{font-size:13px;color:var(--mute)}
+.kpi.in .n{color:var(--green)}.kpi.out .n{color:var(--brown)}
+.prog{height:10px;background:#e3ebe6;border-radius:6px;overflow:hidden;margin-top:6px}
+.prog i{display:block;height:100%;background:var(--gold);border-radius:6px;transition:width .5s}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.vc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;border-left-width:6px}
+.vc .nm{font-weight:600;font-size:17px}
+.vc .st{font-size:34px;font-weight:700;line-height:1.15}
+.vc .st small{font-size:14px;color:var(--mute);font-weight:500}
+.vc .mt{display:flex;justify-content:space-between;font-size:13px;color:var(--mute);margin-top:4px}
+.vc.zero{background:var(--redsoft)}.vc.zero .st{color:var(--red)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;background:var(--redsoft);color:var(--red);margin-left:6px}
+.recent{display:flex;flex-direction:column;gap:0}
+.rc{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.rc:last-child{border:0}
+.rc .a{font-weight:700}.rc .a.in{color:var(--green)}.rc .a.out{color:var(--brown)}
+.rc .s{color:var(--mute);font-size:13px}
+
+/* forms */
+label.f{display:block;font-size:14px;color:var(--mute);margin:10px 0 4px}
+input,select,textarea{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:17px}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid #f1d58a;border-color:var(--gold)}
+.row{display:grid;grid-template-columns:1fr 110px 40px;gap:8px;align-items:start;margin-bottom:8px}
+.row .hint{grid-column:1/3;font-size:13px;color:var(--mute);margin-top:-4px}
+.row .hint.bad{color:var(--red);font-weight:600}
+.x{height:48px;border:0;background:#eef2f0;border-radius:12px;font-size:20px;color:var(--red);cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
+.chip{border:1.5px solid var(--deep2);background:#fff;color:var(--deep);padding:6px 12px;border-radius:99px;font-size:14px;cursor:pointer}
+.chip:active{background:var(--goldsoft)}
+.btn{width:100%;border:0;border-radius:14px;padding:15px;font-size:18px;font-weight:600;cursor:pointer;background:var(--deep);color:#fff}
+.btn.gold{background:var(--gold);color:#2b1c05}
+.btn.brown{background:var(--brown)}
+.btn.ghost{background:#eef2f0;color:var(--deep)}
+.btn[disabled]{opacity:.55}
+.btn.sm{width:auto;padding:8px 14px;font-size:15px}
+.total{display:flex;justify-content:space-between;align-items:center;background:var(--goldsoft);padding:12px 14px;border-radius:12px;margin:12px 0;font-weight:600}
+.total b{font-size:24px}
+.note{font-size:14px;padding:10px 12px;border-radius:10px;background:var(--goldsoft);margin:8px 0}
+.note.ok{background:var(--greensoft)}.note.bad{background:var(--redsoft);color:var(--red)}
+.seg{display:flex;gap:6px;margin-bottom:10px}
+.seg button{flex:1;padding:9px;border:1.5px solid var(--line);background:#fff;border-radius:10px;cursor:pointer}
+.seg button.on{background:var(--deep);color:#fff;border-color:var(--deep)}
+.h-item{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px;background:#fff;display:flex;justify-content:space-between;gap:10px}
+.h-item .l{font-size:15px}.h-item .l small{color:var(--mute);display:block}
+.del{border:0;background:var(--redsoft);color:var(--red);border-radius:10px;padding:6px 12px;cursor:pointer;align-self:flex-start}
+.dh{font-weight:600;margin:14px 0 6px;color:var(--deep)}
+pre,textarea.code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.45;background:#10201a;color:#d7f0e2;border-radius:12px;padding:12px;height:260px;overflow:auto;white-space:pre;width:100%;border:0}
+ol.steps{padding-left:20px;margin:6px 0}ol.steps li{margin-bottom:8px}
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:var(--deep);color:#fff;padding:12px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;z-index:50;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+#toast.err{background:var(--red)}
+.empty{text-align:center;color:var(--mute);padding:26px 10px}
+@media(min-width:760px){
+  nav{position:sticky;top:76px;bottom:auto;max-width:1008px;margin:12px auto 0;border:1px solid var(--line);border-radius:14px;padding:0;overflow:hidden}
+  nav button{flex-direction:row;justify-content:center;gap:8px;font-size:15px;border-top:0;border-bottom:3px solid transparent;padding:12px}
+  nav button.on{border-bottom-color:var(--gold)}
+  body{padding-bottom:30px}
+  #toast{bottom:30px}
+  .hero .big{font-size:68px}
+}
+</style>
+</head>
+<body>
+<header><div class="hwrap">
+  <div class="brand"><b>মক্কা মদিনা</b><span id="today"></span></div>
+  <button class="sync" id="sync" title="এখনই রিফ্রেশ করুন"><span class="dot" id="dot"></span><span id="syncTxt">লোড হচ্ছে…</span></button>
+</div></header>
+
+<nav id="nav">
+  <button data-v="dash" class="on"><span class="ic">📊</span>ড্যাশবোর্ড</button>
+  <button data-v="in"><span class="ic">🚚</span>স্টক ইন</button>
+  <button data-v="out"><span class="ic">📦</span>বিক্রি</button>
+  <button data-v="hist"><span class="ic">🧾</span>হিসাব</button>
+  <button data-v="setup"><span class="ic">⚙️</span>সেটআপ</button>
+</nav>
+
+<main>
+<!-- DASHBOARD -->
+<section class="view on" id="v-dash">
+  <div class="card hero">
+    <div class="lbl">এখন মোট স্টক</div>
+    <div class="big"><span id="totStock">০</span><small>বক্স</small></div>
+    <div class="stack" id="stack"></div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="kpis">
+    <div class="kpi in"><div class="n" id="kIn">০</div><div class="t">আজ এসেছে</div></div>
+    <div class="kpi out"><div class="n" id="kOut">০</div><div class="t">আজ বিক্রি</div></div>
+    <div class="kpi"><div class="n" id="kTarget">০%</div><div class="t">আজকের ট্রাক পূর্ণ</div><div class="prog"><i id="kBar" style="width:0"></i></div></div>
+  </div>
+  <h2>পদ অনুযায়ী স্টক</h2>
+  <p class="sub">প্রতি ৮ সেকেন্ডে নিজে থেকে আপডেট হয়</p>
+  <div class="grid" id="vgrid"></div>
+  <div class="card" style="margin-top:14px"><h2>সাম্প্রতিক কাজ</h2><div class="recent" id="recent"></div></div>
+</section>
+
+<!-- STOCK IN -->
+<section class="view" id="v-in">
+  <div class="card">
+    <h2>ট্রাকের মাল স্টকে তুলুন</h2>
+    <p class="sub">যে পদ যত বক্স এসেছে, লিখুন। মোট লক্ষ্য <b id="tgtLbl">১০,০০০</b> বক্স।</p>
+    <label class="f">তারিখ</label><input type="date" id="inDate">
+    <label class="f">পদ বেছে নিন (বা নিচে নতুন নাম লিখুন)</label>
+    <div class="chips" id="inChips"></div>
+    <div id="inRows"></div>
+    <button class="btn ghost sm" id="inAdd">＋ আরেকটি পদ</button>
+    <div class="total"><span>এই এন্ট্রির মোট</span><b id="inTotal">০</b></div>
+    <div class="note" id="inProg"></div>
+    <label class="f">নোট (ঐচ্ছিক)</label><input id="inNote" placeholder="যেমন: ট্রাক নম্বর">
+    <div style="height:12px"></div>
+    <button class="btn" id="inSave">স্টকে যোগ করুন</button>
+  </div>
+</section>
+
+<!-- STOCK OUT -->
+<section class="view" id="v-out">
+  <div class="card">
+    <h2>বিক্রি করুন</h2>
+    <p class="sub">এক পদ বা মিশ্র পদ — যত পদ লাগে যোগ করুন। স্টক নিজে থেকে কমবে।</p>
+    <label class="f">ক্রেতার নাম</label><input id="outCust" placeholder="যেমন: রহিম স্টোর">
+    <label class="f">তারিখ</label><input type="date" id="outDate">
+    <label class="f">পদ বেছে নিন</label>
+    <div class="chips" id="outChips"></div>
+    <div id="outRows"></div>
+    <button class="btn ghost sm" id="outAdd">＋ আরেকটি পদ</button>
+    <div class="total"><span>মোট বক্স বিক্রি</span><b id="outTotal">০</b></div>
+    <label class="f">নোট (ঐচ্ছিক)</label><input id="outNote" placeholder="যেমন: বাকি / নগদ">
+    <div style="height:12px"></div>
+    <button class="btn brown" id="outSave">বিক্রি সংরক্ষণ করুন</button>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section class="view" id="v-hist">
+  <div class="card">
+    <h2>সব হিসাব</h2>
+    <div class="seg" id="hSeg"><button data-t="all" class="on">সব</button><button data-t="in">স্টক ইন</button><button data-t="out">বিক্রি</button></div>
+    <label class="f">তারিখ অনুযায়ী (ফাঁকা = সব)</label><input type="date" id="hDate">
+    <div id="hList" style="margin-top:12px"></div>
+  </div>
+</section>
+
+<!-- SETUP -->
+<section class="view" id="v-setup">
+  <div class="card">
+    <h2>Google Sheet-এর সাথে সংযোগ</h2>
+    <div class="note" id="connState"></div>
+    <ol class="steps">
+      <li>নতুন একটি <b>Google Sheet</b> খুলুন → উপরের মেনু <b>Extensions → Apps Script</b>।</li>
+      <li>পুরনো কোড মুছে নিচের কোড পেস্ট করুন। কোডের শুরুর <b>PIN</b> নিজের পছন্দমতো বদলান → <b>Save</b>।</li>
+      <li><b>Deploy → New deployment → Web app</b>। <i>Execute as: Me</i>, <i>Who has access: Anyone</i> দিয়ে Deploy করুন এবং অনুমতি (Allow) দিন।</li>
+      <li>যে <b>Web app URL</b> পাবেন তা নিচে বসান, PIN দিন, <b>সংযুক্ত করুন</b> চাপুন। শীটে <i>StockIn, StockOut, Varieties, Summary</i> ট্যাব নিজে তৈরি হবে।</li>
+    </ol>
+    <textarea class="code" id="gsCode" readonly></textarea>
+    <div style="height:8px"></div>
+    <button class="btn ghost" id="copyCode">📋 কোড কপি করুন</button>
+    <label class="f">Web app URL</label><input id="cfgUrl" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off">
+    <label class="f">PIN</label><input id="cfgPin" placeholder="কোডে যে PIN দিয়েছেন" autocomplete="off">
+    <label class="f">প্রতিদিনের ট্রাকের লক্ষ্য (বক্স)</label><input id="cfgTarget" type="number" inputmode="numeric">
+    <div style="height:12px"></div>
+    <button class="btn" id="cfgSave">সংযুক্ত করুন</button>
+    <div style="height:8px"></div>
+    <button class="btn ghost" id="cfgOff">ডেমো মোডে ফিরুন (শীটে কিছু যাবে না)</button>
+    <p class="sub" style="margin-top:12px">কোড পরে বদলালে Deploy → Manage deployments → ✏️ → New version দিয়ে আবার Deploy করতে হবে।</p>
+  </div>
+</section>
+</main>
+<div id="toast"></div>
+
+<script type="text/plain" id="gs-src">
+// মক্কা মদিনা – খেজুর স্টক (Google Apps Script)
+var PIN = '1234';            // <-- নিজের PIN দিন
+var TZ  = 'Asia/Dhaka';
+
+function ss_(){ return SpreadsheetApp.getActiveSpreadsheet(); }
+function sheet_(name, head){
+  var s = ss_().getSheetByName(name);
+  if(!s){
+    s = ss_().insertSheet(name);
+    s.appendRow(head); s.setFrozenRows(1);
+    s.getRange(1,1,1,head.length).setFontWeight('bold').setBackground('#12362a').setFontColor('#ffffff');
+    if(name==='StockIn'||name==='StockOut'){ s.getRange('A:C').setNumberFormat('@'); }
+  }
+  return s;
+}
+function init_(){
+  sheet_('StockIn',  ['Date','Time','ID','Variety','Boxes','Note']);
+  sheet_('StockOut', ['Date','Time','SaleID','Customer','Variety','Boxes','Note']);
+  var v = sheet_('Varieties', ['Variety']);
+  var s = ss_().getSheetByName('Summary');
+  if(!s){
+    s = ss_().insertSheet('Summary');
+    s.getRange('A1:D1').setValues([['Variety','Total In','Total Out','Stock Now']]).setFontWeight('bold').setBackground('#12362a').setFontColor('#ffffff');
+    s.getRange('A2').setFormula('=ARRAYFORMULA(IF(Varieties!A2:A="","",Varieties!A2:A))');
+    s.getRange('B2').setFormula('=ARRAYFORMULA(IF(A2:A="","",SUMIF(StockIn!D:D,A2:A,StockIn!E:E)))');
+    s.getRange('C2').setFormula('=ARRAYFORMULA(IF(A2:A="","",SUMIF(StockOut!E:E,A2:A,StockOut!F:F)))');
+    s.getRange('D2').setFormula('=ARRAYFORMULA(IF(A2:A="","",B2:B-C2:C))');
+    s.getRange('F1').setValue('Total Stock').setFontWeight('bold');
+    s.getRange('F2').setFormula('=SUM(D2:D)');
+    s.setFrozenRows(1);
+  }
+  var d = ss_().getSheetByName('Sheet1');
+  if(d && ss_().getSheets().length>1 && d.getLastRow()===0){ ss_().deleteSheet(d); }
+}
+function setup(){ init_(); }
+
+function doGet(e){ return out_(handle_(e.parameter||{})); }
+function doPost(e){
+  var b = {}; try{ b = JSON.parse(e.postData.contents); }catch(x){}
+  return out_(handle_(b));
+}
+function out_(o){
+  return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
+}
+function today_(){ return Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd'); }
+function now_(){ return Utilities.formatDate(new Date(), TZ, 'HH:mm'); }
+function id_(p){ return p + Date.now().toString(36) + Math.floor(Math.random()*1296).toString(36); }
+
+function handle_(p){
+  if(String(p.pin||'') !== String(PIN)){ return {ok:false, error:'PIN ভুল'}; }
+  var lock = LockService.getScriptLock(); lock.waitLock(20000);
+  try{
+    init_();
+    switch(p.action){
+      case 'addIn':   addIn_(p); break;
+      case 'addOut':  addOut_(p); break;
+      case 'delIn':   delById_('StockIn', p.id); break;
+      case 'delOut':  delById_('StockOut', p.id); break;
+      case 'getAll':  break;
+      default: return {ok:false, error:'unknown action'};
+    }
+    return all_();
+  }catch(err){
+    return {ok:false, error:String(err)};
+  }finally{
+    lock.releaseLock();
+  }
+}
+function dateOf_(p){ return /^\d{4}-\d{2}-\d{2}$/.test(p.date||'') ? p.date : today_(); }
+function ensureVariety_(name){
+  var s = ss_().getSheetByName('Varieties');
+  var vals = s.getRange(2,1,Math.max(s.getLastRow()-1,1),1).getValues().map(function(r){return String(r[0]);});
+  if(vals.indexOf(name) < 0){ s.appendRow([name]); }
+}
+function addIn_(p){
+  var s = ss_().getSheetByName('StockIn'), rows = [], d = dateOf_(p), t = now_();
+  (p.items||[]).forEach(function(it){
+    var v = String(it.variety||'').trim(), b = Number(it.boxes);
+    if(v && b>0){ ensureVariety_(v); rows.push([d,t,id_('I'),v,b,String(p.note||'')]); }
+  });
+  if(!rows.length) throw new Error('কোনো সঠিক এন্ট্রি নেই');
+  s.getRange(s.getLastRow()+1,1,rows.length,6).setValues(rows);
+}
+function addOut_(p){
+  var s = ss_().getSheetByName('StockOut'), rows = [], d = dateOf_(p), t = now_(), sid = id_('S');
+  var stock = stockMap_();
+  var need = {};
+  (p.items||[]).forEach(function(it){
+    var v = String(it.variety||'').trim(), b = Number(it.boxes);
+    if(v && b>0){ need[v] = (need[v]||0) + b; }
+  });
+  Object.keys(need).forEach(function(v){
+    if((stock[v]||0) < need[v]) throw new Error(v + ': স্টকে মাত্র ' + (stock[v]||0) + ' বক্স আছে');
+  });
+  (p.items||[]).forEach(function(it){
+    var v = String(it.variety||'').trim(), b = Number(it.boxes);
+    if(v && b>0){ rows.push([d,t,sid,String(p.customer||''),v,b,String(p.note||'')]); }
+  });
+  if(!rows.length) throw new Error('কোনো সঠিক এন্ট্রি নেই');
+  s.getRange(s.getLastRow()+1,1,rows.length,7).setValues(rows);
+}
+function delById_(name, id){
+  var s = ss_().getSheetByName(name), vals = s.getRange(1,3,s.getLastRow(),1).getValues();
+  for(var i = vals.length-1; i >= 1; i--){ if(String(vals[i][0]) === String(id)){ s.deleteRow(i+1); } }
+}
+function rows_(name, n){
+  var s = ss_().getSheetByName(name), last = s.getLastRow();
+  if(last < 2) return [];
+  return s.getRange(2,1,last-1,n).getValues();
+}
+function stockMap_(){
+  var m = {};
+  rows_('StockIn',6).forEach(function(r){ m[r[3]] = (m[r[3]]||0) + Number(r[4]); });
+  rows_('StockOut',7).forEach(function(r){ m[r[4]] = (m[r[4]]||0) - Number(r[5]); });
+  return m;
+}
+function all_(){
+  var vs = rows_('Varieties',1).map(function(r){return String(r[0]);}).filter(String);
+  var ins = rows_('StockIn',6).map(function(r){
+    return {date:String(r[0]),time:String(r[1]),id:String(r[2]),variety:String(r[3]),boxes:Number(r[4]),note:String(r[5])};
+  });
+  var outs = rows_('StockOut',7).map(function(r){
+    return {date:String(r[0]),time:String(r[1]),id:String(r[2]),customer:String(r[3]),variety:String(r[4]),boxes:Number(r[5]),note:String(r[6])};
+  });
+  return {ok:true, varieties:vs, ins:ins, outs:outs};
+}
+</script>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const bn=n=>Number(n||0).toLocaleString('bn-BD');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const todayStr=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*60000).toISOString().slice(0,10)};
+const PAL=['#12362a','#d29a1f','#7a4a2b','#4f7f5b','#a3452b','#2f6f8f','#8a6d1f','#6b4c7a','#3d5a3a','#b87333'];
+
+let cfg={url:'',pin:'',target:10000};
+try{Object.assign(cfg,JSON.parse(localStorage.getItem('mm_cfg')||'{}'))}catch(e){}
+let data={varieties:[],ins:[],outs:[]};
+let hType='all', busy=false;
+
+/* ---------- API (live sheet or demo) ---------- */
+function demoDB(){try{return JSON.parse(localStorage.getItem('mm_demo'))||{varieties:[],ins:[],outs:[]}}catch(e){return{varieties:[],ins:[],outs:[]}}}
+function demoApi(action,p){
+  const db=demoDB(), rid=x=>x+Date.now().toString(36)+Math.floor(Math.random()*1296).toString(36);
+  const now=new Date(), t=now.toTimeString().slice(0,5);
+  const stock={};
+  db.ins.forEach(r=>stock[r.variety]=(stock[r.variety]||0)+r.boxes);
+  db.outs.forEach(r=>stock[r.variety]=(stock[r.variety]||0)-r.boxes);
+  if(action==='addIn'){
+    p.items.forEach(i=>{if(!db.varieties.includes(i.variety))db.varieties.push(i.variety);db.ins.push({date:p.date,time:t,id:rid('I'),variety:i.variety,boxes:+i.boxes,note:p.note||''})});
+  }else if(action==='addOut'){
+    const need={};p.items.forEach(i=>need[i.variety]=(need[i.variety]||0)+ +i.boxes);
+    for(const v in need){if((stock[v]||0)<need[v])return{ok:false,error:v+': স্টকে মাত্র '+(stock[v]||0)+' বক্স আছে'}}
+    const sid=rid('S');p.items.forEach(i=>db.outs.push({date:p.date,time:t,id:sid,customer:p.customer||'',variety:i.variety,boxes:+i.boxes,note:p.note||''}));
+  }else if(action==='delIn'){db.ins=db.ins.filter(r=>r.id!==p.id)}
+  else if(action==='delOut'){db.outs=db.outs.filter(r=>r.id!==p.id)}
+  localStorage.setItem('mm_demo',JSON.stringify(db));
+  return Promise.resolve(Object.assign({ok:true},db));
+}
+async function api(action,p={}){
+  if(!cfg.url)return demoApi(action,p);
+  if(action==='getAll'){
+    const r=await fetch(cfg.url+(cfg.url.includes('?')?'&':'?')+'action=getAll&pin='+encodeURIComponent(cfg.pin));
+    return r.json();
+  }
+  const r=await fetch(cfg.url,{method:'POST',body:JSON.stringify(Object.assign({action,pin:cfg.pin},p))});
+  return r.json();
+}
+
+/* ---------- helpers ---------- */
+function compute(){
+  const m={},t=todayStr();
+  const add=v=>m[v]||(m[v]={in:0,out:0,tIn:0,tOut:0});
+  (data.varieties||[]).forEach(add);
+  data.ins.forEach(r=>{const o=add(r.variety);o.in+=+r.boxes;if(r.date===t)o.tIn+=+r.boxes});
+  data.outs.forEach(r=>{const o=add(r.variety);o.out+=+r.boxes;if(r.date===t)o.tOut+=+r.boxes});
+  return Object.entries(m).map(([name,o])=>({name,...o,stock:o.in-o.out})).sort((a,b)=>b.stock-a.stock||a.name.localeCompare(b.name));
+}
+const colorOf=name=>{const names=[...new Set([...(data.varieties||[]),...data.ins.map(r=>r.variety),...data.outs.map(r=>r.variety)])].sort();return PAL[Math.max(0,names.indexOf(name))%PAL.length]};
+function toast(msg,err){const t=$('#toast');t.textContent=msg;t.className='show'+(err?' err':'');clearTimeout(toast.t);toast.t=setTimeout(()=>t.className='',2600)}
+function setSync(state,txt){$('#dot').className='dot '+(state||'');$('#syncTxt').textContent=txt}
+
+/* ---------- render: dashboard ---------- */
+function renderDash(){
+  const list=compute(), t=todayStr();
+  const total=list.reduce((a,v)=>a+Math.max(v.stock,0),0);
+  $('#totStock').textContent=bn(total);
+  const live=list.filter(v=>v.stock>0);
+  $('#stack').innerHTML=live.map(v=>`<i title="${esc(v.name)}" style="width:${total?v.stock/total*100:0}%;background:${colorOf(v.name)==='#12362a'?'#6fcf97':colorOf(v.name)}"></i>`).join('');
+  $('#legend').innerHTML=live.map(v=>`<span><em style="background:${colorOf(v.name)==='#12362a'?'#6fcf97':colorOf(v.name)}"></em>${esc(v.name)} ${bn(v.stock)}</span>`).join('')||'এখনো কোনো স্টক নেই';
+  const tIn=data.ins.filter(r=>r.date===t).reduce((a,r)=>a+ +r.boxes,0);
+  const tOut=data.outs.filter(r=>r.date===t).reduce((a,r)=>a+ +r.boxes,0);
+  $('#kIn').textContent=bn(tIn);$('#kOut').textContent=bn(tOut);
+  const pct=Math.min(100,Math.round(tIn/cfg.target*100));
+  $('#kTarget').textContent=bn(pct)+'%';$('#kBar').style.width=pct+'%';
+  $('#vgrid').innerHTML=list.length?list.map(v=>`
+    <div class="vc ${v.stock<=0?'zero':''}" style="border-left-color:${colorOf(v.name)}">
+      <div class="nm">${esc(v.name)}${v.stock<=0&&v.in>0?'<span class="tag">শেষ</span>':''}</div>
+      <div class="st">${bn(v.stock)} <small>বক্স</small></div>
+      <div class="mt"><span>মোট এসেছে ${bn(v.in)}</span><span>বিক্রি ${bn(v.out)}</span></div>
+      <div class="mt"><span>আজ +${bn(v.tIn)}</span><span>আজ −${bn(v.tOut)}</span></div>
+    </div>`).join(''):'<div class="empty" style="grid-column:1/-1">এখনো কোনো পদ নেই। “স্টক ইন” ট্যাবে প্রথম ট্রাকের মাল যোগ করুন।</div>';
+  const ev=[];
+  data.ins.forEach((r,i)=>ev.push({k:'in',r,i}));
+  const seen={};data.outs.forEach((r,i)=>{(seen[r.id]=seen[r.id]||{k:'out',r,i,items:[]}).items.push(r)});
+  Object.values(seen).forEach(x=>ev.push(x));
+  ev.sort((a,b)=>(b.r.date+b.r.time).localeCompare(a.r.date+a.r.time)||b.i-a.i);
+  $('#recent').innerHTML=ev.slice(0,8).map(e=>e.k==='in'
+    ?`<div class="rc"><div>${esc(e.r.variety)}<div class="s">স্টক ইন · ${esc(e.r.date)} ${esc(e.r.time)}</div></div><div class="a in">+${bn(e.r.boxes)}</div></div>`
+    :`<div class="rc"><div>${esc(e.r.customer||'ক্রেতা')}<div class="s">${e.items.map(x=>esc(x.variety)+' '+bn(x.boxes)).join(', ')} · ${esc(e.r.date)}</div></div><div class="a out">−${bn(e.items.reduce((a,x)=>a+ +x.boxes,0))}</div></div>`
+  ).join('')||'<div class="empty">কোনো কাজ হয়নি</div>';
+}
+
+/* ---------- forms ---------- */
+function rowHTML(){
+  return `<div class="row"><input class="v" list="vlist" placeholder="খেজুরের পদ" autocomplete="off"><input class="b" type="number" inputmode="numeric" min="1" placeholder="বক্স"><button class="x" type="button" aria-label="মুছুন">✕</button><div class="hint"></div></div>`;
+}
+function addRow(box,v){
+  const d=document.createElement('div');d.innerHTML=rowHTML();const el=d.firstChild;
+  if(v)el.querySelector('.v').value=v;
+  $(box).appendChild(el);
+  if(v)el.querySelector('.b').focus();
+  return el;
+}
+function readRows(box){
+  const items=[];let bad=false;
+  $$(box+' .row').forEach(r=>{
+    const v=r.querySelector('.v').value.trim(),b=+r.querySelector('.b').value;
+    if(!v&&!b)return;
+    if(!v||!(b>0)||!Number.isInteger(b)){bad=true;return}
+    items.push({variety:v,boxes:b});
+  });
+  return{items,bad};
+}
+function stockOf(name){const o=compute().find(x=>x.name===name);return o?o.stock:null}
+function updIn(){
+  const {items}=readRows('#inRows');
+  const sum=items.reduce((a,i)=>a+i.boxes,0);
+  $('#inTotal').textContent=bn(sum);
+  const t=todayStr(),date=$('#inDate').value||t;
+  const done=data.ins.filter(r=>r.date===date).reduce((a,r)=>a+ +r.boxes,0);
+  const after=done+sum,left=cfg.target-after;
+  const el=$('#inProg');
+  el.className='note '+(left===0?'ok':left<0?'bad':'');
+  el.textContent=`এই তারিখে আগে এসেছে ${bn(done)} বক্স। এখন যোগ হলে ${bn(after)} / ${bn(cfg.target)}। `+(left>0?`বাকি ${bn(left)} বক্স।`:left===0?'ট্রাক পূর্ণ ✔':`লক্ষ্যের চেয়ে ${bn(-left)} বক্স বেশি।`);
+}
+function updOut(){
+  const {items}=readRows('#outRows');
+  $('#outTotal').textContent=bn(items.reduce((a,i)=>a+i.boxes,0));
+  const need={};items.forEach(i=>need[i.variety]=(need[i.variety]||0)+i.boxes);
+  $$('#outRows .row').forEach(r=>{
+    const v=r.querySelector('.v').value.trim(),h=r.querySelector('.hint');
+    if(!v){h.textContent='';h.className='hint';return}
+    const s=stockOf(v);
+    if(s===null){h.textContent='এই নামে কোনো স্টক নেই';h.className='hint bad'}
+    else{const over=(need[v]||0)>s;h.textContent=`স্টকে আছে ${bn(s)} বক্স`+(over?' — বেশি দেওয়া হয়েছে!':'');h.className='hint'+(over?' bad':'')}
+  });
+}
+function renderChips(){
+  const list=compute();
+  $('#vlist').innerHTML=list.map(v=>`<option value="${esc(v.name)}">`).join('');
+  $('#inChips').innerHTML=list.map(v=>`<button type="button" class="chip" data-v="${esc(v.name)}">${esc(v.name)}</button>`).join('')||'<span class="sub">নতুন পদের নাম নিচের ঘরে লিখুন</span>';
+  const av=list.filter(v=>v.stock>0);
+  $('#outChips').innerHTML=av.map(v=>`<button type="button" class="chip" data-v="${esc(v.name)}">${esc(v.name)} (${bn(v.stock)})</button>`).join('')||'<span class="sub">স্টকে কোনো পদ নেই</span>';
+}
+function wireRows(box,upd){
+  const c=$(box);
+  c.addEventListener('input',upd);
+  c.addEventListener('click',e=>{if(e.target.classList.contains('x')){e.target.closest('.row').remove();if(!c.children.length)addRow(box);upd()}});
+}
+function chipClick(box,chips,upd){
+  $(chips).addEventListener('click',e=>{
+    const b=e.target.closest('.chip');if(!b)return;
+    const v=b.dataset.v;
+    const empty=$$(box+' .row').find(r=>!r.querySelector('.v').value.trim());
+    if(empty){empty.querySelector('.v').value=v;empty.querySelector('.b').focus()}else addRow(box,v);
+    upd();
+  });
+}
+
+async function send(btn,action,payload,okMsg){
+  if(busy)return false;busy=true;const old=btn.textContent;btn.disabled=true;btn.textContent='সংরক্ষণ হচ্ছে…';
+  try{
+    const r=await api(action,payload);
+    if(!r.ok){toast(r.error||'সমস্যা হয়েছে',true);return false}
+    data=r;toast(okMsg);afterData();setSync(cfg.url?'':'demo',cfg.url?'লাইভ · এইমাত্র':'ডেমো মোড');return true;
+  }catch(e){toast('সংযোগ হয়নি — ইন্টারনেট বা URL দেখুন',true);return false}
+  finally{busy=false;btn.disabled=false;btn.textContent=old}
+}
+
+/* ---------- history ---------- */
+function renderHist(){
+  const d=$('#hDate').value;let html='';
+  const ev=[];
+  if(hType!=='out')data.ins.forEach((r,i)=>ev.push({k:'in',r,i}));
+  if(hType!=='in'){const g={};data.outs.forEach((r,i)=>{(g[r.id]=g[r.id]||{k:'out',r,i,items:[]}).items.push(r)});Object.values(g).forEach(x=>ev.push(x))}
+  const f=ev.filter(e=>!d||e.r.date===d).sort((a,b)=>(b.r.date+b.r.time).localeCompare(a.r.date+a.r.time)||b.i-a.i).slice(0,300);
+  let last='';
+  f.forEach(e=>{
+    if(e.r.date!==last){last=e.r.date;html+=`<div class="dh">${esc(last)}</div>`}
+    if(e.k==='in')html+=`<div class="h-item"><div class="l"><b style="color:var(--green)">＋ ${esc(e.r.variety)} — ${bn(e.r.boxes)} বক্স</b><small>স্টক ইন · ${esc(e.r.time)}${e.r.note?' · '+esc(e.r.note):''}</small></div><button class="del" data-k="in" data-id="${esc(e.r.id)}">মুছুন</button></div>`;
+    else html+=`<div class="h-item"><div class="l"><b style="color:var(--brown)">− ${esc(e.r.customer||'ক্রেতা')} — ${bn(e.items.reduce((a,x)=>a+ +x.boxes,0))} বক্স</b><small>${e.items.map(x=>esc(x.variety)+' '+bn(x.boxes)).join(', ')} · ${esc(e.r.time)}${e.r.note?' · '+esc(e.r.note):''}</small></div><button class="del" data-k="out" data-id="${esc(e.r.id)}">মুছুন</button></div>`;
+  });
+  $('#hList').innerHTML=html||'<div class="empty">কোনো হিসাব পাওয়া যায়নি</div>';
+}
+
+/* ---------- setup ---------- */
+function renderSetup(){
+  const s=$('#connState');
+  if(cfg.url){s.className='note ok';s.textContent='✔ Google Sheet-এর সাথে সংযুক্ত। সব ইন/আউট শীটে সরাসরি লেখা হচ্ছে।'}
+  else{s.className='note';s.textContent='এখন ডেমো মোডে আছেন — ডেটা শুধু এই ব্রাউজারে থাকছে, শীটে যাচ্ছে না। নিচের ধাপগুলো করলে লাইভ শীটে যাবে।'}
+  $('#cfgUrl').value=cfg.url;$('#cfgPin').value=cfg.pin;$('#cfgTarget').value=cfg.target;
+}
+function saveCfg(){localStorage.setItem('mm_cfg',JSON.stringify(cfg))}
+
+function afterData(){
+  renderDash();renderChips();updIn();updOut();
+  if($('#v-hist').classList.contains('on'))renderHist();
+}
+async function refresh(manual){
+  if(busy)return;
+  try{
+    const r=await api('getAll');
+    if(!r.ok){setSync('err',r.error||'সমস্যা');if(manual)toast(r.error||'সমস্যা',true);return}
+    data=r;afterData();
+    setSync(cfg.url?'':'demo',cfg.url?'লাইভ · '+new Date().toLocaleTimeString('bn-BD',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'ডেমো মোড');
+  }catch(e){setSync('err','সংযোগ নেই');if(manual)toast('সংযোগ হয়নি',true)}
+}
+
+/* ---------- init ---------- */
+function show(v){
+  $$('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));
+  $$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  if(v==='hist')renderHist();if(v==='setup')renderSetup();
+  window.scrollTo({top:0});
+}
+document.body.insertAdjacentHTML('beforeend','<datalist id="vlist"></datalist>');
+$('#today').textContent=new Date().toLocaleDateString('bn-BD',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+$('#gsCode').value=$('#gs-src').textContent.trim();
+$('#inDate').value=$('#outDate').value=todayStr();
+$('#tgtLbl').textContent=bn(cfg.target);
+addRow('#inRows');addRow('#outRows');
+wireRows('#inRows',updIn);wireRows('#outRows',updOut);
+chipClick('#inRows','#inChips',updIn);chipClick('#outRows','#outChips',updOut);
+$('#inAdd').onclick=()=>addRow('#inRows');$('#outAdd').onclick=()=>addRow('#outRows');
+$('#inDate').onchange=updIn;
+$$('#nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
+$('#sync').onclick=()=>refresh(true);
+
+$('#inSave').onclick=async e=>{
+  const {items,bad}=readRows('#inRows');
+  if(bad)return toast('প্রতিটি সারিতে পদের নাম ও বক্স সংখ্যা (পূর্ণ সংখ্যা) দিন',true);
+  if(!items.length)return toast('অন্তত একটি পদ ও বক্স সংখ্যা দিন',true);
+  const ok=await send(e.target,'addIn',{date:$('#inDate').value||todayStr(),items,note:$('#inNote').value},'স্টকে যোগ হয়েছে ✔');
+  if(ok){$('#inRows').innerHTML='';addRow('#inRows');$('#inNote').value='';updIn();show('dash')}
+};
+$('#outSave').onclick=async e=>{
+  const {items,bad}=readRows('#outRows');
+  if(bad)return toast('প্রতিটি সারিতে পদের নাম ও বক্স সংখ্যা (পূর্ণ সংখ্যা) দিন',true);
+  if(!items.length)return toast('অন্তত একটি পদ ও বক্স সংখ্যা দিন',true);
+  const need={};items.forEach(i=>need[i.variety]=(need[i.variety]||0)+i.boxes);
+  for(const v in need){const s=stockOf(v);if(s===null)return toast(`“${v}” নামে কোনো স্টক নেই`,true);if(need[v]>s)return toast(`${v}: স্টকে মাত্র ${bn(s)} বক্স আছে`,true)}
+  const ok=await send(e.target,'addOut',{date:$('#outDate').value||todayStr(),customer:$('#outCust').value.trim(),items,note:$('#outNote').value},'বিক্রি সংরক্ষিত ✔');
+  if(ok){$('#outRows').innerHTML='';addRow('#outRows');$('#outCust').value='';$('#outNote').value='';updOut();show('dash')}
+};
+$('#hSeg').onclick=e=>{const b=e.target.closest('button');if(!b)return;hType=b.dataset.t;$$('#hSeg button').forEach(x=>x.classList.toggle('on',x===b));renderHist()};
+$('#hDate').onchange=renderHist;
+$('#hList').onclick=async e=>{
+  const b=e.target.closest('.del');if(!b)return;
+  if(!confirm('এই এন্ট্রি মুছে ফেলবেন? স্টক নতুন করে হিসাব হবে।'))return;
+  await send(b,b.dataset.k==='in'?'delIn':'delOut',{id:b.dataset.id},'মুছে ফেলা হয়েছে');
+};
+$('#copyCode').onclick=async()=>{
+  const t=$('#gsCode');
+  try{await navigator.clipboard.writeText(t.value)}catch(e){t.select();document.execCommand('copy')}
+  toast('কোড কপি হয়েছে ✔');
+};
+$('#cfgSave').onclick=async()=>{
+  const url=$('#cfgUrl').value.trim(),pin=$('#cfgPin').value.trim(),target=+$('#cfgTarget').value||10000;
+  if(!url||!/^https:\/\/script\.google\.com\//.test(url))return toast('সঠিক Web app URL দিন (https://script.google.com/…)',true);
+  const old={...cfg};cfg={url,pin,target};
+  try{
+    const r=await api('getAll');
+    if(!r.ok){cfg=old;return toast(r.error||'PIN বা URL ভুল',true)}
+    saveCfg();data=r;$('#tgtLbl').textContent=bn(target);afterData();renderSetup();setSync('','লাইভ · সংযুক্ত');toast('Google Sheet-এর সাথে সংযুক্ত ✔');show('dash');
+  }catch(e){cfg=old;toast('সংযোগ হয়নি — URL ও “Anyone” অ্যাক্সেস দেখুন',true)}
+};
+$('#cfgOff').onclick=()=>{cfg.url='';cfg.pin='';saveCfg();renderSetup();refresh()};
+
+refresh();
+setInterval(()=>{if(!document.hidden)refresh()},8000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
+})();
+</script>
+</body>
+</html>
